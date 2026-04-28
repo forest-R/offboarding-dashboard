@@ -24,49 +24,52 @@ function normalizeDate(val: string): string {
 export default function App() {
   const [data, setData] = useState<Retiree[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     fetchSheet()
   }, [])
 
   async function fetchSheet() {
-    try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_NAME)}?key=${API_KEY}`
-      const res = await fetch(url)
-      const json = await res.json()
-      const rows: string[][] = json.values?.slice(1) || []
-      const parsed: Retiree[] = rows
-        .filter(r => r[0])
-        .map(r => {
-      const lastDayDate = normalizeDate(r[5])
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      const lastDay = new Date(lastDayDate)
-      lastDay.setHours(0, 0, 0, 0)
-      const isPast = lastDayDate !== '미정' && lastDay < today
-      const manualStatus = r[7] as '대기중' | '퇴직완료'
-      const status = manualStatus || (isPast ? '퇴직완료' : '대기중')
-    return {
-    name: r[0] || '',
-    dept: r[1] || '',
-    grade: r[2] || '',
-    lastWorkDate: normalizeDate(r[3]),
-    ghrDate: normalizeDate(r[4]),
-    lastDayDate,
-    note: r[6] || '',
-    status,
-    registeredAt: r[8] || '',
-    alertSentAt: r[9] || '',
-    alertCount: Number(r[10]) || 0,
+  try {
+    setRefreshing(true)
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_NAME)}?key=${API_KEY}`
+    const res = await fetch(url)
+    const json = await res.json()
+    const rows: string[][] = json.values?.slice(1) || []
+    const parsed: Retiree[] = rows
+      .filter(r => r[0])
+      .map(r => {
+        const lastDayDate = normalizeDate(r[5])
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const lastDay = new Date(lastDayDate)
+        lastDay.setHours(0, 0, 0, 0)
+        const isPast = lastDayDate !== '미정' && lastDay < today
+        const manualStatus = r[7] as '대기중' | '퇴직완료'
+        const status = manualStatus || (isPast ? '퇴직완료' : '대기중')
+        return {
+          name: r[0] || '',
+          dept: r[1] || '',
+          grade: r[2] || '',
+          lastWorkDate: normalizeDate(r[3]),
+          ghrDate: normalizeDate(r[4]),
+          lastDayDate,
+          note: r[6] || '',
+          status,
+          registeredAt: r[8] || '',
+          alertSentAt: r[9] || '',
+          alertCount: Number(r[10]) || 0,
+        }
+      })
+    setData(parsed)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    setRefreshing(false)
+    setLoading(false)
   }
-})
-      setData(parsed)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }
+}
 
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif', color: '#6b7280' }}>

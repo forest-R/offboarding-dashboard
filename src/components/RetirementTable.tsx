@@ -21,7 +21,7 @@ function DdayBadge({ dateStr }: { dateStr: string }) {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  if (status === '퇴직완료') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#f3f4f6', color: '#9ca3af', fontWeight: 500 }}>퇴직완료</span>
+  if (status === '퇴직완료') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#d1fae5', color: '#065f46', fontWeight: 500 }}>퇴직완료</span>
   if (status === '대기중') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#fef3c7', color: '#92400e', fontWeight: 500 }}>대기중</span>
   return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#e0e7ff', color: '#3730a3', fontWeight: 500 }}>미정</span>
 }

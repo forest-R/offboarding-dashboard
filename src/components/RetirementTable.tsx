@@ -34,16 +34,18 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
   const [search, setSearch] = useState('')
 
   const filtered = data.filter(r => {
-    if (tab === '대기중' && r.status !== '대기중') return false
-    if (tab === '퇴직완료' && r.status !== '퇴직완료') return false
-    if (tab === '미정' && r.lastDayDate !== '미정') return false
-    if (monthFilter && r.lastDayDate !== '미정') {
-      const m = new Date(r.lastDayDate).getMonth() + 1
-      if (String(m) !== monthFilter) return false
-    }
-    if (search && !r.name.includes(search)) return false
-    return true
-  })
+  // 기존 필터 코드 그대로
+}).sort((a, b) => {
+  // 미정은 맨 뒤
+  if (a.lastDayDate === '미정' && b.lastDayDate === '미정') return 0
+  if (a.lastDayDate === '미정') return 1
+  if (b.lastDayDate === '미정') return -1
+  // 퇴직완료는 맨 뒤
+  if (a.status === '퇴직완료' && b.status !== '퇴직완료') return 1
+  if (a.status !== '퇴직완료' && b.status === '퇴직완료') return -1
+  // 날짜 오름차순 (가까운 날짜가 위)
+  return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
+})
 
   const tabs: { key: Tab, label: string }[] = [
     { key: 'all', label: '전체' },
@@ -89,7 +91,7 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
             {filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : filtered.map(r => (
-              <tr key={r.name}>
+              <tr key={r.name} style={{ opacity: r.status === '퇴직완료' ? 0.4 : 1, background: r.status === '퇴직완료' ? '#f9fafb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
                 <td style={tdStyle}>{r.dept}</td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.grade}</td>

@@ -12,9 +12,19 @@ const SHEET_NAME = '퇴직자 정보'
 
 function normalizeDate(val: string): string {
   if (!val || val === '미정') return '미정'
-  return val.replace(/\//g, '-').trim()
-}
+  const trimmed = val.replace(/\//g, '-').trim()
+  const parts = trimmed.split('-')
+  if (parts.length !== 3) return trimmed
 
+  let [y, m, d] = parts
+  // 2자리 연도 처리 (26 → 2026, 20 → 2020)
+  if (y.length === 2) y = '20' + y
+  // 월/일 2자리 패딩
+  m = m.padStart(2, '0')
+  d = d.padStart(2, '0')
+
+  return `${y}-${m}-${d}`
+}
 export default function App() {
   const [data, setData] = useState<Retiree[]>([])
   const [loading, setLoading] = useState(true)

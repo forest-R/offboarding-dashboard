@@ -1,19 +1,29 @@
+import { useState } from 'react'
 import { Retiree } from '../types'
 
 export default function MonthlyChart({ data }: { data: Retiree[] }) {
-  const year = new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
+  const years = Array.from(new Set(
+    data
+      .filter(r => r.lastDayDate !== '미정')
+      .map(r => new Date(r.lastDayDate).getFullYear())
+  )).sort()
+  if (!years.includes(currentYear)) years.push(currentYear)
+  years.sort()
+
+  const [selectedYear, setSelectedYear] = useState(currentYear)
   const months = Array.from({ length: 12 }, (_, i) => i)
 
   const counts = months.map(m => {
     const completed = data.filter(r => {
       if (r.lastDayDate === '미정') return false
       const d = new Date(r.lastDayDate)
-      return d.getFullYear() === year && d.getMonth() === m && r.status === '퇴직완료'
+      return d.getFullYear() === selectedYear && d.getMonth() === m && r.status === '퇴직완료'
     }).length
     const pending = data.filter(r => {
       if (r.lastDayDate === '미정') return false
       const d = new Date(r.lastDayDate)
-      return d.getFullYear() === year && d.getMonth() === m && r.status === '대기중'
+      return d.getFullYear() === selectedYear && d.getMonth() === m && r.status !== '퇴직완료'
     }).length
     return { completed, pending }
   })
@@ -22,7 +32,16 @@ export default function MonthlyChart({ data }: { data: Retiree[] }) {
 
   return (
     <div style={{ marginBottom: '1.5rem' }}>
-      <div style={{ fontSize: 14, fontWeight: 500, color: '#111827', marginBottom: 12 }}>월별 퇴직자 현황 ({year})</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        <div style={{ fontSize: 14, fontWeight: 500, color: '#111827' }}>월별 퇴직자 현황</div>
+        <select
+          value={selectedYear}
+          onChange={e => setSelectedYear(Number(e.target.value))}
+          style={{ fontSize: 13, padding: '4px 8px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', color: '#111827' }}
+        >
+          {years.map(y => <option key={y} value={y}>{y}년</option>)}
+        </select>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {counts.map((c, i) => {
           const total = c.completed + c.pending

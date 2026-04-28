@@ -29,7 +29,7 @@ function StatusBadge({ status, lastDayDate }: { status: string, lastDayDate: str
 type Tab = 'all' | '대기중' | '퇴직완료' | '미정'
 const PAGE_SIZE = 10
 
-export default function RetirementTable({ data, onRefresh }: { data: Retiree[], onRefresh: () => void }) {
+<RetirementTable data={data} onRefresh={fetchSheet} refreshing={refreshing} />
   const [tab, setTab] = useState<Tab>('all')
   const [monthFilter, setMonthFilter] = useState('')
   const [search, setSearch] = useState('')

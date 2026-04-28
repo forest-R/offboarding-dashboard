@@ -96,7 +96,7 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
             {filtered.length === 0 ? (
               <tr><td colSpan={7} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : filtered.map(r => (
-              <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#f3f4f6' : 'transparent' }}>
+              <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
                 <td style={tdStyle}>{r.dept}</td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.grade}</td>

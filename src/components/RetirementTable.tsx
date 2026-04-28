@@ -89,12 +89,13 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
               <th style={{ ...thStyle, width: 100 }}>마지막 출근일</th>
               <th style={{ ...thStyle, width: 70 }}>D-day</th>
               <th style={{ ...thStyle, width: 90 }}>상태</th>
-              <th style={{ ...thStyle, width: 70, textAlign: 'center' }}>비고</th>
+              <th style={{ ...thStyle, width: 70 }}>비고</th>
+              <th style={{ ...thStyle, width: 80, textAlign: 'center' }}>처리</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
+              <tr><td colSpan={8} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : filtered.map(r => (
               <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
@@ -103,7 +104,13 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
                 <td style={tdStyle}>{r.lastDayDate}</td>
                 <td style={tdStyle}><DdayBadge dateStr={r.lastDayDate} /></td>
                 <td style={tdStyle}><StatusBadge status={r.status} /></td>
-                <td style={{ ...tdStyle, textAlign: 'center', color: '#6b7280' }}>{r.note}</td>
+                <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
+                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                  {r.status !== '퇴직완료'
+                    ? <button style={{ fontSize: 12, padding: '4px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: 'pointer', color: '#374151' }}>완료 처리</button>
+                    : <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
+                  }
+                </td>
               </tr>
             ))}
           </tbody>

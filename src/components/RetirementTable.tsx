@@ -106,10 +106,11 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
                 <td style={tdStyle}><StatusBadge status={r.status} /></td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
                 <td style={{ ...tdStyle, textAlign: 'center' }}>
-                  {r.status !== '퇴직완료'
-                    ? <button style={{ fontSize: 12, padding: '4px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: 'pointer', color: '#374151' }}>완료 처리</button>
-                    : <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
-                  }
+                      {r.status === '퇴직완료'
+                      ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리완료</span>
+                      : <span style={{ fontSize: 12, color: '#6b7280' }}>처리대기</span>
+  }
+</td>
                 </td>
               </tr>
             ))}

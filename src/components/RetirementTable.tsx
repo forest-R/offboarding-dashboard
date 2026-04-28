@@ -20,10 +20,10 @@ function DdayBadge({ dateStr }: { dateStr: string }) {
   return <span style={{ fontSize: 12, color: '#065f46' }}>D-{d}</span>
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, lastDayDate }: { status: string, lastDayDate: string }) {
   if (status === '퇴직완료') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#d1fae5', color: '#065f46', fontWeight: 500 }}>퇴직완료</span>
-  if (status === '대기중') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#fef3c7', color: '#92400e', fontWeight: 500 }}>대기중</span>
-  return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#e0e7ff', color: '#3730a3', fontWeight: 500 }}>미정</span>
+  if (lastDayDate === '미정') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#e0e7ff', color: '#3730a3', fontWeight: 500 }}>미정</span>
+  return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#fef3c7', color: '#92400e', fontWeight: 500 }}>대기중</span>
 }
 
 type Tab = 'all' | '대기중' | '퇴직완료' | '미정'
@@ -97,20 +97,19 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
             {filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : filtered.map(r => (
-              <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
+              <tr key={r.name} style={{ background: r.status === '퇴직 완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
                 <td style={tdStyle}>{r.dept}</td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.grade}</td>
                 <td style={tdStyle}>{r.lastDayDate}</td>
                 <td style={tdStyle}><DdayBadge dateStr={r.lastDayDate} /></td>
-                <td style={tdStyle}><StatusBadge status={r.status} /></td>
+                <td style={tdStyle}><StatusBadge status={r.status} lastDayDate={r.lastDayDate} /></td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
                 <td style={{ ...tdStyle, textAlign: 'center' }}>
-                      {r.status === '퇴직완료'
-                      ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리완료</span>
-                      : <span style={{ fontSize: 12, color: '#6b7280' }}>처리대기</span>
-  }
-</td>
+                  {r.status === '퇴직 완료'
+                    ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
+                    : <span style={{ fontSize: 12, color: '#6b7280' }}>처리 대기</span>
+                  }
                 </td>
               </tr>
             ))}

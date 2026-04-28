@@ -14,14 +14,14 @@ function DdayBadge({ dateStr }: { dateStr: string }) {
   const d = calcDday(dateStr)
   if (d === null) return <span style={{ fontSize: 12, color: '#6b7280' }}>미정</span>
   if (d === 0) return <span style={{ fontSize: 12, fontWeight: 600, color: '#991b1b' }}>D-day</span>
-  if (d < 0) return <span style={{ fontSize: 12, color: '#065f46' }}>D+{Math.abs(d)}</span>
+  if (d < 0) return <span style={{ fontSize: 12, color: '#6b7280' }}>D+{Math.abs(d)}</span>
   if (d <= 3) return <span style={{ fontSize: 12, fontWeight: 600, color: '#991b1b' }}>D-{d}</span>
   if (d <= 7) return <span style={{ fontSize: 12, color: '#b45309' }}>D-{d}</span>
   return <span style={{ fontSize: 12, color: '#065f46' }}>D-{d}</span>
 }
 
 function StatusBadge({ status }: { status: string }) {
-  if (status === '퇴직완료') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#d1fae5', color: '#065f46', fontWeight: 500 }}>퇴직완료</span>
+  if (status === '퇴직완료') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#f3f4f6', color: '#9ca3af', fontWeight: 500 }}>퇴직완료</span>
   if (status === '대기중') return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#fef3c7', color: '#92400e', fontWeight: 500 }}>대기중</span>
   return <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: '#e0e7ff', color: '#3730a3', fontWeight: 500 }}>미정</span>
 }
@@ -34,18 +34,23 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
   const [search, setSearch] = useState('')
 
   const filtered = data.filter(r => {
-  // 기존 필터 코드 그대로
-}).sort((a, b) => {
-  // 미정은 맨 뒤
-  if (a.lastDayDate === '미정' && b.lastDayDate === '미정') return 0
-  if (a.lastDayDate === '미정') return 1
-  if (b.lastDayDate === '미정') return -1
-  // 퇴직완료는 맨 뒤
-  if (a.status === '퇴직완료' && b.status !== '퇴직완료') return 1
-  if (a.status !== '퇴직완료' && b.status === '퇴직완료') return -1
-  // 날짜 오름차순 (가까운 날짜가 위)
-  return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
-})
+    if (tab === '대기중' && r.status !== '대기중') return false
+    if (tab === '퇴직완료' && r.status !== '퇴직완료') return false
+    if (tab === '미정' && r.lastDayDate !== '미정') return false
+    if (monthFilter && r.lastDayDate !== '미정') {
+      const m = new Date(r.lastDayDate).getMonth() + 1
+      if (String(m) !== monthFilter) return false
+    }
+    if (search && !r.name.includes(search)) return false
+    return true
+  }).sort((a, b) => {
+    if (a.lastDayDate === '미정' && b.lastDayDate === '미정') return 0
+    if (a.lastDayDate === '미정') return 1
+    if (b.lastDayDate === '미정') return -1
+    if (a.status === '퇴직완료' && b.status !== '퇴직완료') return 1
+    if (a.status !== '퇴직완료' && b.status === '퇴직완료') return -1
+    return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
+  })
 
   const tabs: { key: Tab, label: string }[] = [
     { key: 'all', label: '전체' },

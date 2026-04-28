@@ -69,8 +69,8 @@ export default function RetirementTable({ data, onRefresh, refreshing }: { data:
     setPage(1)
   }
 
-  const thStyle = { background: '#f9fafb', color: '#6b7280', fontWeight: 500, padding: '10px 12px', textAlign: 'left' as const, borderBottom: '0.5px solid #e5e7eb', fontSize: 13 }
-  const tdStyle = { padding: '10px 12px', borderBottom: '0.5px solid #f3f4f6', fontSize: 13, color: '#111827', verticalAlign: 'middle' as const }
+  const thStyle = { background: '#f9fafb', color: '#6b7280', fontWeight: 500, padding: '10px 12px', textAlign: 'center' as const, borderBottom: '0.5px solid #e5e7eb', fontSize: 13 }
+  const tdStyle = { padding: '10px 12px', borderBottom: '0.5px solid #f3f4f6', fontSize: 13, color: '#111827', verticalAlign: 'middle' as const, textAlign: 'center' as const }
 
   return (
     <div>
@@ -102,12 +102,12 @@ export default function RetirementTable({ data, onRefresh, refreshing }: { data:
               <th style={{ ...thStyle, width: 70 }}>D-day</th>
               <th style={{ ...thStyle, width: 90 }}>상태</th>
               <th style={{ ...thStyle, width: 70 }}>비고</th>
-              <th style={{ ...thStyle, width: 80, textAlign: 'center' }}>처리</th>
+              <th style={{ ...thStyle, width: 80 }}>처리</th>
             </tr>
           </thead>
           <tbody>
             {paginated.length === 0 ? (
-              <tr><td colSpan={8} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
+              <tr><td colSpan={8} style={{ ...tdStyle, color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : paginated.map(r => (
               <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
@@ -117,7 +117,7 @@ export default function RetirementTable({ data, onRefresh, refreshing }: { data:
                 <td style={tdStyle}><DdayBadge dateStr={r.lastDayDate} /></td>
                 <td style={tdStyle}><StatusBadge status={r.status} lastDayDate={r.lastDayDate} /></td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
-                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                <td style={tdStyle}>
                   {r.status === '퇴직완료'
                     ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
                     : <span style={{ fontSize: 12, color: '#6b7280' }}>처리 대기</span>

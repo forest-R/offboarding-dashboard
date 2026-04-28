@@ -97,7 +97,7 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
             {filtered.length === 0 ? (
               <tr><td colSpan={8} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
             ) : filtered.map(r => (
-              <tr key={r.name} style={{ background: r.status === '퇴직 완료' ? '#e5e7eb' : 'transparent' }}>
+              <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
                 <td style={tdStyle}>{r.dept}</td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.grade}</td>
@@ -106,9 +106,9 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
                 <td style={tdStyle}><StatusBadge status={r.status} lastDayDate={r.lastDayDate} /></td>
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
                 <td style={{ ...tdStyle, textAlign: 'center' }}>
-                  {r.status === '퇴직 완료'
-                    ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
-                    : <span style={{ fontSize: 12, color: '#6b7280' }}>처리 대기</span>
+                  {r.status === '퇴직완료'
+                    ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리완료</span>
+                    : <span style={{ fontSize: 12, color: '#6b7280' }}>처리대기</span>
                   }
                 </td>
               </tr>

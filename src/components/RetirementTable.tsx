@@ -29,7 +29,7 @@ function StatusBadge({ status, lastDayDate }: { status: string, lastDayDate: str
 type Tab = 'all' | '대기중' | '퇴직완료' | '미정'
 const PAGE_SIZE = 10
 
-<RetirementTable data={data} onRefresh={fetchSheet} refreshing={refreshing} />
+export default function RetirementTable({ data, onRefresh, refreshing }: { data: Retiree[], onRefresh: () => void, refreshing: boolean }) {
   const [tab, setTab] = useState<Tab>('all')
   const [monthFilter, setMonthFilter] = useState('')
   const [search, setSearch] = useState('')
@@ -87,7 +87,9 @@ const PAGE_SIZE = 10
           {Array.from({ length: 12 }, (_, i) => <option key={i} value={String(i + 1)}>{i + 1}월</option>)}
         </select>
         <input value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} placeholder='이름 검색' style={{ fontSize: 13, padding: '6px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, width: 120, color: '#111827' }} />
-        <button onClick={onRefresh} style={{ fontSize: 13, padding: '6px 14px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: 'pointer', color: '#374151', marginLeft: 'auto' }}>새로고침</button>
+        <button onClick={onRefresh} disabled={refreshing} style={{ fontSize: 13, padding: '6px 14px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: refreshing ? 'default' : 'pointer', color: refreshing ? '#9ca3af' : '#374151', marginLeft: 'auto' }}>
+          {refreshing ? '새로고침 중...' : '새로고침'}
+        </button>
       </div>
       <div style={{ border: '0.5px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>

@@ -4,6 +4,7 @@ import MetricCards from './components/MetricCards'
 import AlertBox from './components/AlertBox'
 import MonthlyChart from './components/MonthlyChart'
 import RetirementTable from './components/RetirementTable'
+import NotificationBell from './components/NotificationBell'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY
 const SHEET_ID = import.meta.env.VITE_SHEET_ID
@@ -11,7 +12,6 @@ const SHEET_NAME = '퇴직자 정보'
 
 function normalizeDate(val: string): string {
   if (!val || val === '미정') return '미정'
-  // 2026/05/18 → 2026-05-18
   return val.replace(/\//g, '-').trim()
 }
 
@@ -65,6 +65,7 @@ export default function App() {
           <h1 style={{ fontSize: 20, fontWeight: 600, color: '#111827', margin: 0 }}>퇴직자 모니터링 대시보드</h1>
           <p style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>관리자: 정보보안/인프라팀 조아연님</p>
         </div>
+        <NotificationBell data={data} />
       </div>
       <MetricCards data={data} />
       <AlertBox data={data} />

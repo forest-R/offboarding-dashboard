@@ -43,14 +43,14 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
     }
     if (search && !r.name.includes(search)) return false
     return true
-  .sort((a, b) => {
-  if (a.status === '퇴직완료' && b.status !== '퇴직완료') return 1
-  if (a.status !== '퇴직완료' && b.status === '퇴직완료') return -1
-  if (a.lastDayDate === '미정' && b.lastDayDate === '미정') return 0
-  if (a.lastDayDate === '미정') return 1
-  if (b.lastDayDate === '미정') return -1
-  return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
-})
+  }).sort((a, b) => {
+    if (a.status === '퇴직완료' && b.status !== '퇴직완료') return 1
+    if (a.status !== '퇴직완료' && b.status === '퇴직완료') return -1
+    if (a.lastDayDate === '미정' && b.lastDayDate === '미정') return 0
+    if (a.lastDayDate === '미정') return 1
+    if (b.lastDayDate === '미정') return -1
+    return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
+  })
 
   const tabs: { key: Tab, label: string }[] = [
     { key: 'all', label: '전체' },

@@ -38,15 +38,15 @@ export default function App() {
       const parsed: Retiree[] = rows
         .filter(r => r[0])
         .map(r => {
-  const lastDayDate = normalizeDate(r[5])
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const lastDay = new Date(lastDayDate)
-  lastDay.setHours(0, 0, 0, 0)
-  const isPast = lastDayDate !== '미정' && lastDay < today
-  const manualStatus = r[7] as '대기중' | '퇴직완료'
-  const status = manualStatus || (isPast ? '퇴직완료' : '대기중')
-  return {
+      const lastDayDate = normalizeDate(r[5])
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const lastDay = new Date(lastDayDate)
+      lastDay.setHours(0, 0, 0, 0)
+      const isPast = lastDayDate !== '미정' && lastDay < today
+      const manualStatus = r[7] as '대기중' | '퇴직완료'
+      const status = manualStatus || (isPast ? '퇴직완료' : '대기중')
+    return {
     name: r[0] || '',
     dept: r[1] || '',
     grade: r[2] || '',

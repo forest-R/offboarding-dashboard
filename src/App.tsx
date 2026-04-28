@@ -9,6 +9,12 @@ const API_KEY = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY
 const SHEET_ID = import.meta.env.VITE_SHEET_ID
 const SHEET_NAME = '퇴직자 정보'
 
+function normalizeDate(val: string): string {
+  if (!val || val === '미정') return '미정'
+  // 2026/05/18 → 2026-05-18
+  return val.replace(/\//g, '-').trim()
+}
+
 export default function App() {
   const [data, setData] = useState<Retiree[]>([])
   const [loading, setLoading] = useState(true)
@@ -29,9 +35,9 @@ export default function App() {
           name: r[0] || '',
           dept: r[1] || '',
           grade: r[2] || '',
-          lastWorkDate: r[3] || '미정',
-          ghrDate: r[4] || '미정',
-          lastDayDate: r[5] || '미정',
+          lastWorkDate: normalizeDate(r[3]),
+          ghrDate: normalizeDate(r[4]),
+          lastDayDate: normalizeDate(r[5]),
           note: r[6] || '',
           status: (r[7] as '대기중' | '퇴직완료') || '대기중',
           registeredAt: r[8] || '',

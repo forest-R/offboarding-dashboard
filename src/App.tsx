@@ -57,7 +57,7 @@ export default function App() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 600, color: '#111827', margin: 0 }}>퇴직자 모니터링 대시보드</h1>
-          <p style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>관리자: 인사팀</p>
+          <p style={{ fontSize: 13, color: '#6b7280', marginTop: 4 }}>관리자: 정보보안/인프라팀 조아연님</p>
         </div>
       </div>
       <MetricCards data={data} />

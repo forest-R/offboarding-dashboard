@@ -27,11 +27,13 @@ function StatusBadge({ status, lastDayDate }: { status: string, lastDayDate: str
 }
 
 type Tab = 'all' | '대기중' | '퇴직완료' | '미정'
+const PAGE_SIZE = 10
 
 export default function RetirementTable({ data, onRefresh }: { data: Retiree[], onRefresh: () => void }) {
   const [tab, setTab] = useState<Tab>('all')
   const [monthFilter, setMonthFilter] = useState('')
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
 
   const filtered = data.filter(r => {
     if (tab === '대기중' && r.status !== '대기중') return false
@@ -52,12 +54,20 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
     return new Date(a.lastDayDate).getTime() - new Date(b.lastDayDate).getTime()
   })
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
   const tabs: { key: Tab, label: string }[] = [
     { key: 'all', label: '전체' },
     { key: '대기중', label: '대기중' },
     { key: '퇴직완료', label: '퇴직완료' },
     { key: '미정', label: '미정' },
   ]
+
+  function changeTab(t: Tab) {
+    setTab(t)
+    setPage(1)
+  }
 
   const thStyle = { background: '#f9fafb', color: '#6b7280', fontWeight: 500, padding: '10px 12px', textAlign: 'left' as const, borderBottom: '0.5px solid #e5e7eb', fontSize: 13 }
   const tdStyle = { padding: '10px 12px', borderBottom: '0.5px solid #f3f4f6', fontSize: 13, color: '#111827', verticalAlign: 'middle' as const }
@@ -66,17 +76,17 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
     <div>
       <div style={{ display: 'flex', gap: 4, borderBottom: '0.5px solid #e5e7eb', marginBottom: '1rem' }}>
         {tabs.map(t => (
-          <div key={t.key} onClick={() => setTab(t.key)} style={{ fontSize: 13, padding: '7px 14px', cursor: 'pointer', color: tab === t.key ? '#1e3a8a' : '#6b7280', borderBottom: tab === t.key ? '2px solid #1e3a8a' : '2px solid transparent', fontWeight: tab === t.key ? 500 : 400, marginBottom: -1 }}>
+          <div key={t.key} onClick={() => changeTab(t.key)} style={{ fontSize: 13, padding: '7px 14px', cursor: 'pointer', color: tab === t.key ? '#1e3a8a' : '#6b7280', borderBottom: tab === t.key ? '2px solid #1e3a8a' : '2px solid transparent', fontWeight: tab === t.key ? 500 : 400, marginBottom: -1 }}>
             {t.label}
           </div>
         ))}
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
-        <select value={monthFilter} onChange={e => setMonthFilter(e.target.value)} style={{ fontSize: 13, padding: '6px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', color: '#111827' }}>
+        <select value={monthFilter} onChange={e => { setMonthFilter(e.target.value); setPage(1) }} style={{ fontSize: 13, padding: '6px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', color: '#111827' }}>
           <option value=''>전체 월</option>
           {Array.from({ length: 12 }, (_, i) => <option key={i} value={String(i + 1)}>{i + 1}월</option>)}
         </select>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder='이름 검색' style={{ fontSize: 13, padding: '6px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, width: 120, color: '#111827' }} />
+        <input value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} placeholder='이름 검색' style={{ fontSize: 13, padding: '6px 10px', border: '0.5px solid #d1d5db', borderRadius: 8, width: 120, color: '#111827' }} />
         <button onClick={onRefresh} style={{ fontSize: 13, padding: '6px 14px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: 'pointer', color: '#374151', marginLeft: 'auto' }}>새로고침</button>
       </div>
       <div style={{ border: '0.5px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
@@ -94,9 +104,9 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr><td colSpan={8} style={{ ...tdStyle, textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>데이터가 없습니다.</td></tr>
-            ) : filtered.map(r => (
+            ) : paginated.map(r => (
               <tr key={r.name} style={{ background: r.status === '퇴직완료' ? '#e5e7eb' : 'transparent' }}>
                 <td style={{ ...tdStyle, fontWeight: 500 }}>{r.name}</td>
                 <td style={tdStyle}>{r.dept}</td>
@@ -107,8 +117,8 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
                 <td style={{ ...tdStyle, color: '#6b7280' }}>{r.note}</td>
                 <td style={{ ...tdStyle, textAlign: 'center' }}>
                   {r.status === '퇴직완료'
-                    ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리완료</span>
-                    : <span style={{ fontSize: 12, color: '#6b7280' }}>처리대기</span>
+                    ? <span style={{ fontSize: 12, color: '#9ca3af' }}>처리 완료</span>
+                    : <span style={{ fontSize: 12, color: '#6b7280' }}>처리 대기</span>
                   }
                 </td>
               </tr>
@@ -116,6 +126,15 @@ export default function RetirementTable({ data, onRefresh }: { data: Retiree[], 
           </tbody>
         </table>
       </div>
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: '1rem' }}>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ fontSize: 13, padding: '5px 12px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: page === 1 ? 'default' : 'pointer', color: page === 1 ? '#d1d5db' : '#374151' }}>이전</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)} style={{ fontSize: 13, padding: '5px 10px', border: '0.5px solid', borderColor: page === p ? '#1e3a8a' : '#d1d5db', borderRadius: 8, background: page === p ? '#1e3a8a' : '#fff', color: page === p ? '#fff' : '#374151', cursor: 'pointer' }}>{p}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ fontSize: 13, padding: '5px 12px', border: '0.5px solid #d1d5db', borderRadius: 8, background: '#fff', cursor: page === totalPages ? 'default' : 'pointer', color: page === totalPages ? '#d1d5db' : '#374151' }}>다음</button>
+        </div>
+      )}
     </div>
   )
 }
